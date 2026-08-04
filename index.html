@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#17150f" />
+    <meta name="description" content="Квадро Бургер — бургери, піца та комбо з доставкою у Братиславі." />
+    <title>Квадро Бургер — замовлення онлайн</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div class="notice-bar"><span data-i18n="notice">Безкоштовна доставка від 30 €</span><span>•</span><span data-i18n="hoursShort">Щодня 11:00–22:00</span></div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Квадро Бургер">
+        <span class="brand-mark">Q</span>
+        <span>КВАДРО<br /><b>БУРГЕР</b></span>
+      </a>
+      <nav class="desktop-nav" aria-label="Головна навігація">
+        <a href="#menu" data-i18n="menu">Меню</a>
+        <a href="#delivery" data-i18n="delivery">Доставка</a>
+        <a href="#contacts" data-i18n="contacts">Контакти</a>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-switch" aria-label="Перемикач мови">
+          <button class="lang-btn active" data-lang="uk">UA</button>
+          <button class="lang-btn" data-lang="sk">SK</button>
+        </div>
+        <button class="cart-button" id="cart-open" aria-label="Відкрити кошик">
+          <span>▱</span><span data-i18n="cart">Кошик</span><b id="cart-count">0</b>
+        </button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span></span><span data-i18n="heroEyebrow">Справжній смак Братислави</span></div>
+          <h1 data-i18n-html="heroTitle">ВЕЛИКИЙ СМАК.<br /><em>ЧЕСНІ</em> БУРГЕРИ.</h1>
+          <p data-i18n="heroText">Соковиті бургери, хрустка картопля, гаряча піца та комбо, які хочеться повторити.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#menu"><span data-i18n="chooseMenu">Обрати меню</span><span>↘</span></a>
+            <div class="rating"><strong>4.9</strong><span>★★★★★<small data-i18n="rating">оцінка гостей</small></span></div>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Бургер, картопля фрі та піца">
+          <img src="/hero-quadro.jpg" alt="Фірмовий бургер Квадро з картоплею фрі та піцою" />
+          <div class="hero-price"><small data-i18n="from">від</small><strong>12,90 €</strong><span data-i18n="combo">комбо</span></div>
+          <div class="hero-sticker"><span data-i18n-html="freshDaily">Свіже<br />щодня</span></div>
+        </div>
+      </section>
+
+      <section class="quick-benefits" aria-label="Переваги">
+        <article><span>✦</span><div><strong data-i18n="benefitOneTitle">Готуємо після замовлення</strong><small data-i18n="benefitOneText">Нічого не лежить під лампою</small></div></article>
+        <article><span>↗</span><div><strong data-i18n="benefitTwoTitle">Доставка 35–50 хв</strong><small data-i18n="benefitTwoText">По Братиславі та поруч</small></div></article>
+        <article><span>◎</span><div><strong data-i18n="benefitThreeTitle">Оплата при отриманні</strong><small data-i18n="benefitThreeText">Готівкою або карткою кур'єру</small></div></article>
+      </section>
+
+      <section class="menu-section" id="menu">
+        <div class="section-heading">
+          <div><div class="eyebrow"><span></span><span data-i18n="ourMenu">Наше меню</span></div><h2 data-i18n-html="menuTitle">ОБЕРИ СВІЙ<br /><em>ІДЕАЛЬНИЙ</em> СМАК</h2></div>
+          <p data-i18n="menuIntro">Ціни підібрані відповідно до актуального рівня закладів Братислави. Склад і ціни адміністратор може оновлювати будь-коли.</p>
+        </div>
+        <div class="category-tabs" id="category-tabs"></div>
+        <div class="product-grid" id="product-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="combo-banner" id="delivery">
+        <div class="combo-number">4×</div>
+        <div><div class="eyebrow light"><span></span><span data-i18n="signature">Фірмове комбо</span></div><h2 data-i18n-html="quadComboTitle">КВАДРО МЕНЮ —<br />УСЕ, ЩО ТРЕБА.</h2></div>
+        <div class="combo-details"><p data-i18n="quadComboText">Подвійний бургер, велика картопля, соус і напій 0,5 л.</p><button class="button button-light" data-add="quad-menu"><span data-i18n="addFor">Додати за 15,90 €</span><span>＋</span></button></div>
+      </section>
+
+      <section class="delivery-section">
+        <div><div class="eyebrow"><span></span><span data-i18n="howItWorks">Як це працює</span></div><h2 data-i18n-html="deliveryTitle">ВІД КЛІКУ ДО<br /><em>ПЕРШОГО</em> УКУСУ</h2></div>
+        <div class="steps">
+          <article><b>01</b><span>▤</span><h3 data-i18n="stepOneTitle">Обери страви</h3><p data-i18n="stepOneText">Додай у кошик усе, що хочеться сьогодні.</p></article>
+          <article><b>02</b><span>⌁</span><h3 data-i18n="stepTwoTitle">Вкажи контакти</h3><p data-i18n="stepTwoText">Телефон, спосіб отримання та адресу.</p></article>
+          <article><b>03</b><span>↗</span><h3 data-i18n="stepThreeTitle">Ми підтвердимо</h3><p data-i18n="stepThreeText">Замовлення потрапить закладу й на пошту.</p></article>
+        </div>
+      </section>
+    </main>
+
+    <footer id="contacts">
+      <div class="brand footer-brand"><span class="brand-mark">Q</span><span>КВАДРО<br /><b>БУРГЕР</b></span></div>
+      <div><small data-i18n="schedule">Графік</small><strong data-i18n="hours">Щодня, 11:00–22:00</strong></div>
+      <div><small data-i18n="area">Зона доставки</small><strong>Bratislava</strong></div>
+      <div><small data-i18n="phone">Телефон</small><strong data-i18n="comingSoon">буде додано</strong></div>
+      <p>© 2026 Quadro Burger</p>
+    </footer>
+
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+    <aside class="cart-drawer" id="cart-drawer" aria-hidden="true">
+      <div class="drawer-head"><div><small data-i18n="yourOrder">Ваше замовлення</small><h2 data-i18n="cart">Кошик</h2></div><button class="icon-button" id="cart-close" aria-label="Закрити">×</button></div>
+      <div class="cart-items" id="cart-items"></div>
+      <div class="empty-cart" id="empty-cart"><span>▱</span><h3 data-i18n="emptyTitle">Тут поки порожньо</h3><p data-i18n="emptyText">Додайте бургер, піцу або комбо з меню.</p><button class="button button-dark" id="empty-continue" data-i18n="toMenu">До меню</button></div>
+      <form class="checkout-form" id="checkout-form">
+        <h3 data-i18n="checkout">Оформлення</h3>
+        <div class="fulfillment"><label><input type="radio" name="fulfillment" value="delivery" checked /><span data-i18n="deliveryOption">Доставка</span></label><label><input type="radio" name="fulfillment" value="pickup" /><span data-i18n="pickupOption">Самовивіз</span></label></div>
+        <label><span data-i18n="name">Ім'я</span><input name="name" required maxlength="80" autocomplete="name" /></label>
+        <label><span data-i18n="phone">Телефон</span><input name="phone" required maxlength="30" inputmode="tel" autocomplete="tel" placeholder="+421" /></label>
+        <label class="address-field"><span data-i18n="address">Адреса доставки</span><input name="address" maxlength="180" autocomplete="street-address" /></label>
+        <label><span data-i18n="note">Коментар</span><textarea name="note" maxlength="500" rows="2"></textarea></label>
+        <input class="honeypot" name="website" tabindex="-1" autocomplete="off" />
+        <div class="totals"><div><span data-i18n="subtotal">Сума</span><b id="subtotal">0,00 €</b></div><div><span data-i18n="deliveryFee">Доставка</span><b id="delivery-fee">1,90 €</b></div><div class="grand-total"><span data-i18n="total">Разом</span><b id="grand-total">0,00 €</b></div></div>
+        <p class="form-status" id="order-status"></p>
+        <button class="button button-primary button-full" type="submit"><span data-i18n="placeOrder">Підтвердити замовлення</span><span>→</span></button>
+        <small class="legal" data-i18n="orderLegal">Натискаючи кнопку, ви погоджуєтесь на обробку даних для виконання замовлення.</small>
+      </form>
+    </aside>
+
+    <dialog class="success-dialog" id="success-dialog"><button class="icon-button" id="success-close">×</button><span class="success-mark">✓</span><h2 data-i18n="successTitle">Замовлення прийнято!</h2><p id="success-text"></p><button class="button button-dark" id="success-done" data-i18n="done">Готово</button></dialog>
+    <script type="module" src="/src/storefront.js"></script>
+  </body>
+</html>
