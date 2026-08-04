@@ -1,6 +1,6 @@
 const config = {
-  url: (import.meta.env.VITE_SUPABASE_URL || "").replace(/\/$/, ""),
-  anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || "",
+  url: (import.meta.env?.VITE_SUPABASE_URL || "").replace(/\/$/, ""),
+  anonKey: import.meta.env?.VITE_SUPABASE_ANON_KEY || "",
 };
 
 const SESSION_KEY = "quadro-admin-session";
