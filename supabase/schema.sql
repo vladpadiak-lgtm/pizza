@@ -47,8 +47,13 @@ create table if not exists public.order_items (
   product_id text not null,
   product_name text not null,
   unit_price_cents integer not null check (unit_price_cents >= 0),
-  quantity integer not null check (quantity between 1 and 20)
+  quantity integer not null check (quantity between 1 and 20),
+  customizations jsonb not null default '[]'::jsonb,
+  item_note text not null default ''
 );
+
+alter table public.order_items add column if not exists customizations jsonb not null default '[]'::jsonb;
+alter table public.order_items add column if not exists item_note text not null default '';
 
 create index if not exists idx_products_active_category_order on public.products(active, category, sort_order);
 create index if not exists idx_orders_created_at on public.orders(created_at desc);

@@ -70,7 +70,7 @@
       <section class="combo-banner" id="delivery">
         <div class="combo-number">4×</div>
         <div><div class="eyebrow light"><span></span><span data-i18n="signature">Фірмове комбо</span></div><h2 data-i18n-html="quadComboTitle">КВАДРО МЕНЮ —<br />УСЕ, ЩО ТРЕБА.</h2></div>
-        <div class="combo-details"><p data-i18n="quadComboText">Подвійний бургер, велика картопля, соус і напій 0,5 л.</p><button class="button button-light" data-add="quad-menu"><span data-i18n="addFor">Додати за 15,90 €</span><span>＋</span></button></div>
+        <div class="combo-details"><p data-i18n="quadComboText">Подвійний бургер, велика картопля, соус і напій 0,5 л.</p><button class="button button-light" data-customize="quad-menu"><span data-i18n="addFor">Додати за 15,90 €</span><span>＋</span></button></div>
       </section>
 
       <section class="delivery-section">
@@ -111,7 +111,27 @@
       </form>
     </aside>
 
+    <dialog class="customizer-dialog" id="customizer-dialog">
+      <form class="customizer-shell" id="customizer-form">
+        <button class="icon-button customizer-close" id="customizer-close" type="button" aria-label="Закрити">×</button>
+        <div class="customizer-photo" id="customizer-photo"></div>
+        <div class="customizer-content">
+          <span class="product-category" id="customizer-category"></span>
+          <h2 id="customizer-title"></h2>
+          <p class="customizer-description" id="customizer-description"></p>
+          <div class="customizer-notice"><span>✦</span><p id="customizer-hint"></p></div>
+          <div class="customizer-groups" id="customizer-groups"></div>
+          <label class="customizer-note"><span id="customizer-note-label"></span><textarea id="customizer-note" maxlength="280" rows="2"></textarea></label>
+          <div class="customizer-footer">
+            <div class="customizer-quantity"><span id="customizer-quantity-label"></span><div><button type="button" data-customizer-quantity="-1">−</button><input id="customizer-quantity" type="number" min="1" max="20" value="1" inputmode="numeric" /><button type="button" data-customizer-quantity="1">＋</button></div></div>
+            <button class="button button-primary customizer-submit" type="submit"><span id="customizer-submit-label">Додати до кошика</span><strong id="customizer-total">0,00 €</strong></button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
     <dialog class="success-dialog" id="success-dialog"><button class="icon-button" id="success-close">×</button><span class="success-mark">✓</span><h2 data-i18n="successTitle">Замовлення прийнято!</h2><p id="success-text"></p><button class="button button-dark" id="success-done" data-i18n="done">Готово</button></dialog>
+    <script src="config.js"></script>
     <script type="module" src="src/storefront.js"></script>
   </body>
 </html>

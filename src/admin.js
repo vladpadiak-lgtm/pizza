@@ -80,7 +80,10 @@ function statusOptions(selected) {
 function renderOrders() {
   if (!state.orders.length) { $("#orders-list").innerHTML = `<p>${tr("noOrders")}</p>`; return; }
   $("#orders-list").innerHTML = state.orders.map((order) => {
-    const items = (order.order_items || []).map((item) => `${item.quantity}× ${escapeHtml(item.product_name)}`).join("<br />");
+    const items = (order.order_items || []).map((item) => {
+      const choices = Array.isArray(item.customizations) ? item.customizations.map((choice) => escapeHtml(choice.label)).join(" · ") : "";
+      return `${item.quantity}× ${escapeHtml(item.product_name)}${choices ? `<em>${choices}</em>` : ""}${item.item_note ? `<em>“${escapeHtml(item.item_note)}”</em>` : ""}`;
+    }).join("<br />");
     return `<article class="order-card"><div><strong>${escapeHtml(order.code)}</strong><small>${new Date(order.created_at).toLocaleString(state.locale === "uk" ? "uk-UA" : "sk-SK")}</small></div><div class="order-items-summary"><strong>${escapeHtml(order.customer_name)} · ${escapeHtml(order.phone)}</strong><small>${items}</small><small>${escapeHtml(order.fulfillment === "delivery" ? order.address : tr("pickupOption"))}</small></div><div class="order-total">${formatPrice(order.total_cents)}</div><select data-order-status="${escapeHtml(order.id)}">${statusOptions(order.status)}</select></article>`;
   }).join("");
 }

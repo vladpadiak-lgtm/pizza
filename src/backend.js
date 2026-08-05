@@ -1,6 +1,7 @@
+const runtimeConfig = globalThis.QUADRO_CONFIG || {};
 const config = {
-  url: (import.meta.env?.VITE_SUPABASE_URL || "").replace(/\/$/, ""),
-  anonKey: import.meta.env?.VITE_SUPABASE_ANON_KEY || "",
+  url: (import.meta.env?.VITE_SUPABASE_URL || runtimeConfig.supabaseUrl || "").replace(/\/$/, ""),
+  anonKey: import.meta.env?.VITE_SUPABASE_ANON_KEY || runtimeConfig.supabaseAnonKey || "",
 };
 
 const SESSION_KEY = "quadro-admin-session";

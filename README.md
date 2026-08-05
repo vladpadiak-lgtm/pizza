@@ -5,6 +5,8 @@
 - Публічний сайт: `https://vladpadiak-lgtm.github.io/pizza/`
 - Вхід адміністратора: `https://vladpadiak-lgtm.github.io/pizza/admin/`
 - Українська та словацька мови
+- Фотографії для всіх 18 позицій меню
+- Конструктор складу: інгредієнти, доповнення, соуси, напої, лід і примітки
 - Меню, категорії, кошик, доставка або самовивіз
 - Захищена адмін-панель для товарів, цін і статусів замовлень
 - Надсилання кожного нового замовлення на email через Resend
@@ -30,7 +32,7 @@ insert into public.admins (user_id) values ('UUID_КОРИСТУВАЧА');
 
 4. Розгорнути функцію `supabase/functions/create-order`.
 5. Додати секрети функції: `RESEND_API_KEY`, `ORDER_EMAIL`, `ORDER_FROM_EMAIL`, `ALLOWED_ORIGIN`.
-6. У GitHub Actions secrets додати `VITE_SUPABASE_URL` та `VITE_SUPABASE_ANON_KEY`.
-7. У Settings → Pages вибрати джерело **GitHub Actions**.
+6. Додати публічні значення `supabaseUrl` та `supabaseAnonKey` у `config.js`. Анонімний ключ Supabase призначений для браузера; доступ до захищених даних контролюють політики RLS.
+7. У Settings → Pages залишити публікацію з гілки `main`.
 
 Адреса одержувача замовлень зберігається лише у серверному секреті `ORDER_EMAIL` і не потрапляє в код сайту.

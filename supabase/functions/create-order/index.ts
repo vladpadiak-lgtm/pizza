@@ -20,6 +20,29 @@ function clean(value: unknown, max: number) { return String(value ?? "").trim().
 function escapeHtml(value: unknown) { return String(value ?? "").replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]!)); }
 function euro(cents: number) { return new Intl.NumberFormat("sk-SK", { style: "currency", currency: "EUR" }).format(cents / 100); }
 
+const ADDON_PRICES: Record<string, number> = {
+  "extra-patty": 350, "extra-chicken": 350, "extra-veggie-patty": 300,
+  "extra-cheese": 100, "extra-bacon": 150, jalapeno: 80, "gluten-free-bun": 150,
+  "large-fries": 100, "gluten-free-crust": 200, "extra-mozzarella": 150,
+  "extra-salami": 180, "extra-mushrooms": 120, "extra-olives": 100, "extra-corn": 100,
+  "extra-ketchup": 80, "extra-garlic-sauce": 80, "extra-bbq-sauce": 80,
+  "extra-cheese-sauce": 100, "extra-lemon": 30, "extra-mint": 30,
+};
+
+function sanitizeCustomizations(value: unknown, locale: "uk" | "sk") {
+  if (!Array.isArray(value)) return [];
+  const seen = new Set<string>();
+  return value.slice(0, 30).flatMap((entry) => {
+    const code = clean(entry?.code, 80);
+    if (!code || seen.has(code)) return [];
+    const isFreeChoice = code.startsWith("choice-") || code.startsWith("remove-");
+    if (!isFreeChoice && !(code in ADDON_PRICES)) return [];
+    seen.add(code);
+    const label = locale === "sk" ? entry?.label_sk || entry?.label_uk : entry?.label_uk || entry?.label_sk;
+    return [{ code, label: clean(label || code, 100), price_cents: ADDON_PRICES[code] || 0 }];
+  });
+}
+
 Deno.serve(async (request) => {
   const origin = request.headers.get("Origin");
   if (request.method === "OPTIONS") return new Response("ok", { headers: cors(origin) });
@@ -42,25 +65,32 @@ Deno.serve(async (request) => {
       return json({ error: "Missing or invalid order details" }, 400, origin);
     }
 
-    const quantities = new Map<string, number>();
-    for (const item of requestedItems) {
-      const id = clean(item.productId, 100);
-      const quantity = Math.floor(Number(item.quantity));
-      if (!id || quantity < 1 || quantity > 20) return json({ error: "Invalid order item" }, 400, origin);
-      quantities.set(id, Math.min(20, (quantities.get(id) || 0) + quantity));
-    }
+    const requestedLines = requestedItems.map((item) => ({
+      productId: clean(item.productId, 100),
+      quantity: Math.floor(Number(item.quantity)),
+      customizations: sanitizeCustomizations(item.customizations, locale),
+      itemNote: clean(item.itemNote, 280),
+    }));
+    if (requestedLines.some((item) => !item.productId || item.quantity < 1 || item.quantity > 20)) return json({ error: "Invalid order item" }, 400, origin);
 
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const ids = [...quantities.keys()];
+    const ids = [...new Set(requestedLines.map((item) => item.productId))];
     const { data: products, error: productsError } = await supabase.from("products").select("id,name_uk,name_sk,price_cents,active").in("id", ids).eq("active", true);
     if (productsError || !products || products.length !== ids.length) return json({ error: "Some products are unavailable" }, 409, origin);
 
-    const orderItems = products.map((product) => ({
-      product_id: product.id,
-      product_name: locale === "sk" ? product.name_sk : product.name_uk,
-      unit_price_cents: product.price_cents,
-      quantity: quantities.get(product.id)!,
-    }));
+    const productMap = new Map(products.map((product) => [product.id, product]));
+    const orderItems = requestedLines.map((line) => {
+      const product = productMap.get(line.productId)!;
+      const extrasCents = line.customizations.reduce((sum, item) => sum + item.price_cents, 0);
+      return {
+        product_id: line.productId,
+        product_name: locale === "sk" ? product.name_sk : product.name_uk,
+        unit_price_cents: product.price_cents + extrasCents,
+        quantity: line.quantity,
+        customizations: line.customizations,
+        item_note: line.itemNote,
+      };
+    });
     const subtotalCents = orderItems.reduce((sum, item) => sum + item.unit_price_cents * item.quantity, 0);
     const deliveryCents = fulfillment === "delivery" && subtotalCents < 3000 ? 190 : 0;
     const totalCents = subtotalCents + deliveryCents;
@@ -80,7 +110,11 @@ Deno.serve(async (request) => {
     const orderEmail = Deno.env.get("ORDER_EMAIL");
     const fromEmail = Deno.env.get("ORDER_FROM_EMAIL");
     if (resendKey && orderEmail && fromEmail) {
-      const rows = orderItems.map((item) => `<tr><td style="padding:8px 0;border-bottom:1px solid #eee">${item.quantity}× ${escapeHtml(item.product_name)}</td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right">${euro(item.unit_price_cents * item.quantity)}</td></tr>`).join("");
+      const rows = orderItems.map((item) => {
+        const details = item.customizations.map((choice) => escapeHtml(choice.label)).join(" · ");
+        const noteRow = item.item_note ? `<br><small style="color:#777">${escapeHtml(item.item_note)}</small>` : "";
+        return `<tr><td style="padding:8px 0;border-bottom:1px solid #eee">${item.quantity}× ${escapeHtml(item.product_name)}${details ? `<br><small style="color:#777">${details}</small>` : ""}${noteRow}</td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right">${euro(item.unit_price_cents * item.quantity)}</td></tr>`;
+      }).join("");
       const emailResponse = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
