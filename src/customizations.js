@@ -5,6 +5,7 @@ export const CUSTOMIZER_TEXT = {
   uk: {
     customize: "Налаштувати",
     customizable: "Можна змінити склад",
+    composition: "Склад",
     customizeHint: "Приберіть непотрібне або додайте улюблені доповнення.",
     included: "Склад",
     includedHint: "Зніміть позначку, щоб прибрати інгредієнт — без доплати.",
@@ -31,6 +32,7 @@ export const CUSTOMIZER_TEXT = {
   sk: {
     customize: "Upraviť",
     customizable: "Zloženie môžete upraviť",
+    composition: "Zloženie",
     customizeHint: "Odoberte, čo nechcete, alebo pridajte obľúbené doplnky.",
     included: "Zloženie",
     includedHint: "Zrušte označenie a ingredienciu odstránime bez príplatku.",
@@ -163,6 +165,19 @@ const iceOptions = [
   option("choice-ice-extra", "більше льоду", "viac ľadu"),
 ];
 
+const SIDE_COMPOSITION = {
+  fries: [option("potato", "картопля", "zemiaky"), option("oil", "рослинна олія", "rastlinný olej"), option("paprika", "копчена паприка", "údená paprika")],
+  "loaded-fries": [option("potato", "картопля", "zemiaky"), option("oil", "рослинна олія", "rastlinný olej")],
+  "onion-rings": [option("onion", "цибуля", "cibuľa"), option("breading", "хрустка паніровка", "chrumkavá strúhanka"), option("house-sauce", "домашній соус", "domáca omáčka")],
+};
+
+const DRINK_COMPOSITION = {
+  kofola: [option("kofola-base", "Kofola Original", "Kofola Original")],
+  cola: [option("cola-base", "Coca-Cola Original або Zero", "Coca-Cola Original alebo Zero")],
+  lemonade: [option("lemon", "лимон", "citrón"), option("lime", "лайм", "limetka"), option("mint", "м'ята", "mäta"), option("soda", "содова", "sóda")],
+  water: [option("mineral-water", "мінеральна вода", "minerálna voda")],
+};
+
 function group(id, titleKey, type, options, extra = {}) { return { id, titleKey, type, options, ...extra }; }
 
 export function getProductCustomizer(product) {
@@ -194,7 +209,7 @@ export function getProductCustomizer(product) {
   }
 
   if (product.category === "sides") {
-    const groups = [];
+    const groups = [group("composition", "composition", "display", SIDE_COMPOSITION[product.id] || [])];
     if (product.id === "loaded-fries") groups.push(group("included", "included", "included", [option("cheddar-sauce", "чедерний соус", "čedarová omáčka", 0, true), option("bacon", "бекон", "slanina", 0, true), option("crispy-onion", "хрустка цибуля", "chrumkavá cibuľka", 0, true)], { hintKey: "includedHint" }));
     groups.push(group("seasoning", "seasoning", "radio", [option("choice-seasoning-classic", "класична сіль", "klasická soľ", 0, true), option("choice-seasoning-paprika", "копчена паприка", "údená paprika"), option("choice-seasoning-spicy", "гостра приправа", "pikantné korenie"), option("choice-seasoning-none", "без солі", "bez soli")], { summaryAlways: true }));
     groups.push(group("extras", "extras", "checkbox", [option("extra-ketchup", "кетчуп", "kečup", 80), option("extra-garlic-sauce", "часниковий соус", "cesnaková omáčka", 80), option("extra-bbq-sauce", "BBQ соус", "BBQ omáčka", 80), option("extra-cheese-sauce", "чедерний соус", "čedarová omáčka", 100)]));
@@ -202,7 +217,7 @@ export function getProductCustomizer(product) {
   }
 
   if (product.category === "drinks") {
-    const groups = [];
+    const groups = [group("composition", "composition", "display", DRINK_COMPOSITION[product.id] || [])];
     if (product.id === "cola") groups.push(group("variant", "chooseCola", "radio", [option("choice-cola-original", "Original", "Original", 0, true), option("choice-cola-zero", "Zero", "Zero")], { summaryAlways: true }));
     if (product.id === "water") groups.push(group("variant", "chooseWater", "radio", [option("choice-water-sparkling", "газована", "sýtená", 0, true), option("choice-water-still", "негазована", "nesýtená")], { summaryAlways: true }));
     if (product.id === "lemonade") groups.push(group("sweetness", "chooseSweetness", "radio", [option("choice-sweet-normal", "звичайна", "bežná", 0, true), option("choice-sweet-less", "менш солодка", "menej sladká"), option("choice-sweet-none", "без цукру", "bez cukru")], { summaryAlways: true }));
@@ -211,7 +226,7 @@ export function getProductCustomizer(product) {
     return groups;
   }
 
-  return [];
+  return [group("composition", "composition", "display", [option("description", product.description_uk || product.name_uk || "Стандартний склад", product.description_sk || product.name_sk || "Štandardné zloženie")])];
 }
 
 export function localizedLabel(item, locale) { return item?.label?.[locale] || item?.label?.uk || ""; }

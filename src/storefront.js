@@ -71,7 +71,7 @@ function renderProducts() {
         ${badge ? `<span class="product-badge">${escapeHtml(badge)}</span>` : ""}${hasPhoto ? "" : `<span class="product-emoji">${escapeHtml(product.emoji || "🍽️")}</span>`}
         <span class="customizable-chip">✦ ${escapeHtml(tr("customizable"))}</span>
       </div>
-      <div class="product-body"><span class="product-category">${CATEGORY_LABELS[state.locale][product.category] || product.category}</span><h3>${escapeHtml(productName(product, state.locale))}</h3><p>${escapeHtml(productDescription(product, state.locale))}</p>
+      <div class="product-body"><span class="product-category">${CATEGORY_LABELS[state.locale][product.category] || product.category}</span><h3>${escapeHtml(productName(product, state.locale))}</h3><div class="product-composition"><span>✓ ${escapeHtml(tr("composition"))}</span><p>${escapeHtml(productDescription(product, state.locale))}</p></div>
         <div class="product-bottom"><strong class="product-price">${formatPrice(product.price_cents)}</strong><button class="add-button" data-customize="${escapeHtml(product.id)}" aria-label="${escapeHtml(tr("customize"))}">＋</button></div>
       </div>
     </article>`;
@@ -140,6 +140,7 @@ function closeCart() {
 }
 
 function renderOption(group, item, selectedCodes) {
+  if (group.type === "display") return `<div class="ingredient-chip"><span>✓</span><b>${escapeHtml(localizedLabel(item, state.locale))}</b></div>`;
   const isIncluded = group.type === "included";
   const isRadio = group.type === "radio";
   const removalCode = `remove-${item.id}`;
@@ -154,7 +155,7 @@ function renderOption(group, item, selectedCodes) {
 function renderCustomizerGroups(product, selectedCodes) {
   return getProductCustomizer(product).filter((group) => group.options?.length).map((group) => `<fieldset class="customizer-group" data-summary-always="${group.summaryAlways ? "true" : "false"}">
     <legend>${escapeHtml(tr(group.titleKey))}</legend>${group.hintKey ? `<p>${escapeHtml(tr(group.hintKey))}</p>` : ""}
-    <div class="choice-grid">${group.options.map((item) => renderOption(group, item, selectedCodes)).join("")}</div>
+    <div class="choice-grid ${group.type === "display" ? "ingredient-grid" : ""}">${group.options.map((item) => renderOption(group, item, selectedCodes)).join("")}</div>
   </fieldset>`).join("");
 }
 
